@@ -111,4 +111,4 @@ Copyright (c) 2015 Heini Fagerlund. Licensed under the [MIT license](http://open
 
 - - -
 ## Changelog
-* 0.1.0 - July 11, 2015. Initial version.
+* 0.1.0 - July 15, 2015. Initial version.
