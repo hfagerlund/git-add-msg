@@ -97,6 +97,12 @@ do
         xclip -o >> ./changelog.txt ##OPTIONAL: separate log file
         xclip -o 
          
+        mymultimsg=${mymultimsg//&/&amp;} 
+        mymultimsg=${mymultimsg//$"'"/} 
+        mymultimsg=${mymultimsg//>/&gt;}
+        mymultimsg=${mymultimsg//</&lt;}
+        mymultimsg=${mymultimsg//$'"'/&quot;}
+
         if mkdir bin &> /dev/null; then  
             tee "./bin/body_template.xml" > /dev/null <<MYXML
 <?xml version="1.0"?>
