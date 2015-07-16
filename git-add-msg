@@ -14,7 +14,7 @@
 # * (Trac users) run using -r option to automatically add comments, with links to changesets in specified repository, in Trac tickets.
 #
 # author: Heini Fagerlund
-# version: 0.1.0
+# version: 0.1.1
 # license: MIT
 # 
 # Copyright (c) 2015 Heini Fagerlund
