@@ -111,4 +111,5 @@ Copyright (c) 2015 Heini Fagerlund. Licensed under the [MIT license](http://open
 
 - - -
 ## Changelog
+* 0.1.1 - July 15, 2015. Commit messages now support additional characters: ``&``, ``"``, ``<``, and ``>``. Note: ``'`` is removed from messages.
 * 0.1.0 - July 15, 2015. Initial version.
