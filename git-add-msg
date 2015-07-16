@@ -1,0 +1,166 @@
+#!/bin/bash
+# A git extension (command line tool) that automatically logs commits to Trac and/or a changelog.
+# 
+## ie. is a substitute for the following commands:
+##               $ git add .
+##               $ git commit -am "<place your commit msg here>"
+## (optionally)  $ git status
+#
+# Also creates file 'changelog.txt' (ie. logs git SHA-1 hashes/changesets).
+#
+# Usage:
+# * make executable using: $ chmod 0750 git-add-msg
+# * (all users) run using: $ git add-msg
+# * (Trac users) run using -r option to automatically add comments, with links to changesets in specified repository, in Trac tickets.
+#
+# author: Heini Fagerlund
+# version: 0.1.0
+# license: MIT
+# 
+# Copyright (c) 2015 Heini Fagerlund
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+bar="----------------"
+bar=$bar$bar
+currentDir="$(dirname "$0")"
+
+#read a single keypress
+_key()
+{
+    IFS= read -r -s -n1 -d '' "${1:-_KEY}"
+}
+
+usage() { 
+    printf "\t%s\n" "$bar"
+    
+    printf "\t %s\n" "USAGE:  ./trac-service [-r <string>]
+                   options:  
+                   -r    Trac repository name"
+    printf "\t%s\n" "$bar" 
+    exit
+}
+
+#begin main
+while getopts ":r:" option; do
+    case $option in
+    r) rarg=${OPTARG} ;; 
+    *) usage
+       ;; 
+    esac
+done
+
+if [ -f $currentDir/config.cfg ];
+then
+   sed -i "s/^\(repo=\).*$/\1\"$rarg\"/" $currentDir/config.cfg 
+   repo=${rarg:-no_repo_specified}
+else
+   printf "\t%s\n" "$bar" 
+   printf "ALL USERS:\nTo avoid seeing this message again, 
+copy and save config_sample.cfg as config.cfg.\n\nTrac USERS ONLY:\nUpdate config.cfg with your Trac settings.\n"
+   printf "\t%s\n" "$bar" 
+   exit
+fi
+
+printf "Enter your (Trac) ticket number (without hash OR colon):\n"
+read ticketnum
+
+while :
+do
+  printf "Enter your commit message (without quote marks; press ctrl-d when done):\n"
+  mymultimsg=$(cat)
+  
+  if [ ! -z "$mymultimsg" -a "$mymultimsg" != " " ]; then
+        printf "git committing...\n"
+	git add .
+	git commit -am "#$ticketnum: $mymultimsg" | xclip
+        changeset=$( xclip -o ) 
+
+        changeset=${changeset%\]*} 
+        changeset=${changeset: -7} 
+        xclip -o >> ./changelog.txt ##OPTIONAL: separate log file
+        xclip -o 
+         
+        if mkdir bin &> /dev/null; then  
+            tee "./bin/body_template.xml" > /dev/null <<MYXML
+<?xml version="1.0"?>
+  <methodCall>
+    <methodName>ticket.update</methodName>
+    <params>
+      <param><int>ticket number</int></param>
+      <param><string>changeset number, commit msg</string></param>
+      <param><action>leave</action></param>
+      <param><notify>False</notify></param>
+      <param><when>None</when></param>
+    </params>
+  </methodCall>
+MYXML
+            
+            tee "./bin/transform.xsl" > /dev/null <<EOF
+<?xml version="1.0"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  version="1.0">
+     <xsl:output method="xml" encoding="UTF-8" indent="yes" cdata-section-elements="mymultimsg"/>
+
+  <xsl:preserve-space elements="*" />
+
+  <xsl:template match="node()|@*">
+     <xsl:copy>
+       <xsl:apply-templates select="node()|@*"/>
+     </xsl:copy>
+ </xsl:template>
+
+<xsl:template match="param/int/text()">
+  <xsl:value-of select="'$ticketnum'"/>
+ </xsl:template>
+
+ <xsl:template match="param/string/text()">
+   <xsl:value-of select="concat('[changeset:', '$changeset', '/', '$repo', ']  = ', '$mymultimsg')" />
+ </xsl:template>
+</xsl:stylesheet> 
+EOF
+ 
+            . trac-service
+
+        else
+            rm -r ./bin/ 
+        fi 
+    else
+	    printf "Commit message cannot be blank. Please try again.\n\n"
+        continue 
+    fi
+  break 
+done
+
+while :
+do
+  printf "Do you wish to view the git status?\n"
+    printf "\t %s\n" "Yes (y)" \
+                     "No (n)"
+    _key
+    shopt -s nocasematch
+    case $_KEY in
+       y) git status; printf "Exiting.\n"; break ;; 
+       n) printf "Exiting.\n"; break ;;
+       *) printf "\a\n%s\n\n" "Invalid choice; try again."
+          continue
+          ;;
+    esac
+    shopt -u nocasematch
+done
