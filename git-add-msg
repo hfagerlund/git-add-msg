@@ -14,7 +14,7 @@
 # * (Trac users) run using -r option to automatically add comments, with links to changesets in specified repository, in Trac tickets.
 #
 # author: Heini Fagerlund
-# version: 0.1.1
+# version: 0.1.2
 # license: MIT
 # 
 # Copyright (c) 2015 Heini Fagerlund
@@ -102,6 +102,7 @@ do
         mymultimsg=${mymultimsg//>/&gt;}
         mymultimsg=${mymultimsg//</&lt;}
         mymultimsg=${mymultimsg//$'"'/&quot;}
+        mymultimsg=${mymultimsg//$'\n'/&#13;}
 
         if mkdir bin &> /dev/null; then  
             tee "./bin/body_template.xml" > /dev/null <<MYXML
