@@ -14,7 +14,7 @@
 # * (Trac users) run using -r option to automatically add comments, with links to changesets in specified repository, in Trac tickets.
 #
 # author: Heini Fagerlund
-# version: 0.1.1
+# version: 0.1.3
 # license: MIT
 # 
 # Copyright (c) 2015 Heini Fagerlund
@@ -85,16 +85,19 @@ while :
 do
   printf "Enter your commit message (without quote marks; press ctrl-d when done):\n"
   mymultimsg=$(cat)
-  
+  multimsg="${mymultimsg}"
   if [ ! -z "$mymultimsg" -a "$mymultimsg" != " " ]; then
         printf "git committing...\n"
 	git add .
-	git commit -am "#$ticketnum: $mymultimsg" | xclip
+	git commit -F- <<MSG
+$multimsg
+MSG
+        git log --decorate -1 | xclip
         changeset=$( xclip -o ) 
 
         changeset=${changeset%\]*} 
         changeset=${changeset: -7} 
-        xclip -o >> ./changelog.txt ##OPTIONAL: separate log file
+        xclip -o >> ./changelog.log ##OPTIONAL: separate log file
         xclip -o 
          
         mymultimsg=${mymultimsg//&/&amp;} 
@@ -102,6 +105,7 @@ do
         mymultimsg=${mymultimsg//>/&gt;}
         mymultimsg=${mymultimsg//</&lt;}
         mymultimsg=${mymultimsg//$'"'/&quot;}
+        mymultimsg=${mymultimsg//$'\n'/&#13;}
 
         if mkdir bin &> /dev/null; then  
             tee "./bin/body_template.xml" > /dev/null <<MYXML
