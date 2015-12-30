@@ -13,7 +13,7 @@ and (optionally):
 ```
 $ git status
 ```
-Also creates a **changelog.txt** file (in your project's root directory), and (optionally) adds a comment in the Trac ticket for each commit.
+Also creates a **changelog.log** file (in your project's root directory), and (optionally) adds a comment in the Trac ticket for each commit.
 
 ## tl;dr
 All of the above is accomplished by running just one command:
