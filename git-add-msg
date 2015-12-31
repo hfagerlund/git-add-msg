@@ -14,7 +14,7 @@
 # * (Trac users) run using -r option to automatically add comments, with links to changesets in specified repository, in Trac tickets.
 #
 # author: Heini Fagerlund
-# version: 0.1.3
+# version: 0.1.4
 # license: MIT
 # 
 # Copyright (c) 2015 Heini Fagerlund
@@ -60,36 +60,36 @@ usage() {
 #begin main
 while getopts ":r:" option; do
     case $option in
-    r) rarg=${OPTARG} ;; 
-    *) usage
-       ;; 
+	r) rarg=${OPTARG} ;;
+	*) usage
+	    ;;
     esac
 done
 
 if [ -f $currentDir/config.cfg ];
 then
-   sed -i "s/^\(repo=\).*$/\1\"$rarg\"/" $currentDir/config.cfg 
-   repo=${rarg:-no_repo_specified}
+    sed -i "s/^\(repo=\).*$/\1\"$rarg\"/" $currentDir/config.cfg
+    repo=${rarg:-no_repo_specified}
 else
-   printf "\t%s\n" "$bar" 
-   printf "ALL USERS:\nTo avoid seeing this message again, 
+    printf "\t%s\n" "$bar"
+    printf "ALL USERS:\nTo avoid seeing this message again,
 copy and save config_sample.cfg as config.cfg.\n\nTrac USERS ONLY:\nUpdate config.cfg with your Trac settings.\n"
-   printf "\t%s\n" "$bar" 
-   exit
+    printf "\t%s\n" "$bar"
+    exit
 fi
 
-printf "Enter your (Trac) ticket number (without hash OR colon):\n"
+printf "Enter your Trac ticket number (without hash OR colon), or leave blank and press Enter (if not using Trac):\n"
 read ticketnum
 
 while :
 do
-  printf "Enter your commit message (without quote marks; press ctrl-d when done):\n"
-  mymultimsg=$(cat)
-  multimsg="${mymultimsg}"
-  if [ ! -z "$mymultimsg" -a "$mymultimsg" != " " ]; then
+    printf "Enter your commit message (without quote marks; press ctrl-d when done):\n"
+    mymultimsg=$(cat)
+    multimsg="${mymultimsg}"
+    if [ ! -z "$mymultimsg" -a "$mymultimsg" != " " ]; then
         printf "git committing...\n"
-	git add .
-	git commit -F- <<MSG
+        git add .
+        git commit -F- <<MSG
 $multimsg
 MSG
         git log --decorate -1 | xclip
@@ -99,16 +99,16 @@ MSG
         changeset=${changeset: -7} 
         xclip -o >> ./changelog.log ##OPTIONAL: separate log file
         xclip -o 
-         
-        mymultimsg=${mymultimsg//&/&amp;} 
-        mymultimsg=${mymultimsg//$"'"/} 
-        mymultimsg=${mymultimsg//>/&gt;}
-        mymultimsg=${mymultimsg//</&lt;}
-        mymultimsg=${mymultimsg//$'"'/&quot;}
-        mymultimsg=${mymultimsg//$'\n'/&#13;}
+	if [ ! -z "$ticketnum" -a "$ticketnum" != " " ]; then
+            mymultimsg=${mymultimsg//&/&amp;}
+            mymultimsg=${mymultimsg//$"'"/}
+            mymultimsg=${mymultimsg//>/&gt;}
+            mymultimsg=${mymultimsg//</&lt;}
+            mymultimsg=${mymultimsg//$'"'/&quot;}
+            mymultimsg=${mymultimsg//$'\n'/&#13;}
 
-        if mkdir bin &> /dev/null; then  
-            tee "./bin/body_template.xml" > /dev/null <<MYXML
+		if mkdir bin &> /dev/null; then
+		    tee "./bin/body_template.xml" > /dev/null <<MYXML
 <?xml version="1.0"?>
   <methodCall>
     <methodName>ticket.update</methodName>
@@ -121,8 +121,7 @@ MSG
     </params>
   </methodCall>
 MYXML
-            
-            tee "./bin/transform.xsl" > /dev/null <<EOF
+		    tee "./bin/transform.xsl" > /dev/null <<EOF
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   version="1.0">
@@ -145,32 +144,32 @@ MYXML
  </xsl:template>
 </xsl:stylesheet> 
 EOF
- 
-            . trac-service
+		    . trac-service
 
-        else
-            rm -r ./bin/ 
-        fi 
+		else
+		    rm -r ./bin/
+		fi
+	fi
     else
-	    printf "Commit message cannot be blank. Please try again.\n\n"
+        printf "Commit message cannot be blank. Please try again.\n\n"
         continue 
     fi
-  break 
+    break
 done
 
 while :
 do
-  printf "Do you wish to view the git status?\n"
+    printf "Do you wish to view the git status?\n"
     printf "\t %s\n" "Yes (y)" \
-                     "No (n)"
+        "No (n)"
     _key
     shopt -s nocasematch
     case $_KEY in
-       y) git status; printf "Exiting.\n"; break ;; 
-       n) printf "Exiting.\n"; break ;;
-       *) printf "\a\n%s\n\n" "Invalid choice; try again."
-          continue
-          ;;
+	y) git status; printf "Exiting.\n"; break ;;
+	n) printf "Exiting.\n"; break ;;
+	*) printf "\a\n%s\n\n" "Invalid choice; try again."
+            continue
+            ;;
     esac
     shopt -u nocasematch
 done
