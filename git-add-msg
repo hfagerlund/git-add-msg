@@ -14,10 +14,10 @@
 # * (Trac users) run using -r option to automatically add comments, with links to changesets in specified repository, in Trac tickets.
 #
 # author: Heini Fagerlund
-# version: 0.1.4
+# version: 0.2.4
 # license: MIT
 # 
-# Copyright (c) 2015 Heini Fagerlund
+# Copyright (c) Heini Fagerlund
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -155,21 +155,4 @@ EOF
         continue 
     fi
     break
-done
-
-while :
-do
-    printf "Do you wish to view the git status?\n"
-    printf "\t %s\n" "Yes (y)" \
-        "No (n)"
-    _key
-    shopt -s nocasematch
-    case $_KEY in
-	y) git status; printf "Exiting.\n"; break ;;
-	n) printf "Exiting.\n"; break ;;
-	*) printf "\a\n%s\n\n" "Invalid choice; try again."
-            continue
-            ;;
-    esac
-    shopt -u nocasematch
 done

@@ -3,7 +3,7 @@
 # Use with git-add-msg to log git commits to Trac using its XML-RPC API
 #
 # author: Heini Fagerlund
-# version: 0.1.1
+# version: 0.2.4
 # license: MIT
 #	
 # The MIT License (MIT)
@@ -11,7 +11,7 @@
 # 
 # The MIT License (MIT)
 # 
-# Copyright (c) 2015 Heini Fagerlund
+# Copyright (c) Heini Fagerlund
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
