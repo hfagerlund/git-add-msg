@@ -27,6 +27,8 @@ $ git add-msg
 - git version >= 1.7
 - (optional) Trac >= v.0.12 
  - curl >= 7.21
+### Testing
+- [shunit2](https://github.com/kward/shunit2) >= 2.1.0
 
 (All copyrights for the above remain with their respective owners.)
 - - -
@@ -104,13 +106,22 @@ $ git add-msg -r <repo-name>
 ```
 
 Using the **-r** option automatically generates a link to the changeset in the Trac ticket.
+
+#### Tests:
+Run unit tests (in the `/tests` directory) using:
+```
+$ ./acceptanceTests.sh
+```
+
+**Note**: make sure that [shunit2](https://github.com/kward/shunit2) has been added to your `$PATH`.
 - - -
 ## License
-Copyright (c) 2015 Heini Fagerlund. Licensed under the [MIT license](http://opensource.org/licenses/mit-license.php).
+Copyright (c) Heini Fagerlund. Licensed under the [MIT license](http://opensource.org/licenses/mit-license.php).
 (See [LICENSE](https://github.com/hfagerlund/git-add-msg/blob/master/LICENSE).)
 
 - - -
 ## Changelog
+* 0.2.4 - January 6, 2016. Deprecated (optional) git status check.
 * 0.1.4 - December 30, 2015. Fixed display of ticket update message.
 * 0.1.3 - December 30, 2015. Newlines in multi-line commit messages now display in Changelog file.
 * 0.1.2 - December 29, 2015. Newlines in multi-line commit messages now display in Trac comments.
