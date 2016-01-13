@@ -121,7 +121,7 @@ Copyright (c) Heini Fagerlund. Licensed under the [MIT license](http://opensourc
 
 - - -
 ## Changelog
-* 0.2.4 - January 6, 2016. Deprecated (optional) git status check.
+* 0.2.0 - January 13, 2016. Deprecated (optional) git status check.
 * 0.1.4 - December 30, 2015. Fixed display of ticket update message.
 * 0.1.3 - December 30, 2015. Newlines in multi-line commit messages now display in Changelog file.
 * 0.1.2 - December 29, 2015. Newlines in multi-line commit messages now display in Trac comments.

@@ -7,7 +7,7 @@
 # * run using: $ ./acceptanceTests.sh
 #
 # author: Heini Fagerlund
-# version: 0.2.4
+# version: 0.2.0
 # license: MIT
 # 
 # Copyright (c) Heini Fagerlund
