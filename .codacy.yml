@@ -1,0 +1,7 @@
+---
+languages:
+  shell:
+    extensions:
+      - '*.'
+exclude_paths:
+  - shunit2-master/**/*
