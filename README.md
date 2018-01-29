@@ -121,7 +121,7 @@ Copyright (c) 2015 Heini Fagerlund. Licensed under the [MIT license](http://open
 
 - - -
 ## Changelog
-* 0.2.1 - January 28, 2018. Fixed display of changeset number in auto-generated Trac link.
+* 0.2.1 - January 29, 2018. Fixed display of changeset number in auto-generated Trac link.
 * 0.2.0 - January 13, 2016. Deprecated (optional) git status check.
 * 0.1.4 - December 30, 2015. Fixed display of ticket update message.
 * 0.1.3 - December 30, 2015. Newlines in multi-line commit messages now display in Changelog file.
