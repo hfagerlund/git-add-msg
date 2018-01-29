@@ -14,10 +14,10 @@
 # * (Trac users) run using -r option to automatically add comments, with links to changesets in specified repository, in Trac tickets.
 #
 # author: Heini Fagerlund
-# version: 0.2.0
+# version: 0.2.1
 # license: MIT
 # 
-# Copyright (c) Heini Fagerlund
+# Copyright (c) 2015 Heini Fagerlund
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -85,14 +85,11 @@ while :
 do
     printf "Enter your commit message (without quote marks; press ctrl-d when done):\n"
     mymultimsg=$(cat)
-    multimsg="${mymultimsg}"
+
     if [ ! -z "$mymultimsg" -a "$mymultimsg" != " " ]; then
         printf "git committing...\n"
         git add .
-        git commit -F- <<MSG
-$multimsg
-MSG
-        git log --decorate -1 | xclip
+	git commit -am "#$ticketnum: $mymultimsg" | xclip
         changeset=$( xclip -o ) 
 
         changeset=${changeset%\]*} 
