@@ -116,11 +116,12 @@ $ ./acceptanceTests.sh
 **Note**: make sure that [shunit2](https://github.com/kward/shunit2) has been added to your `$PATH`.
 - - -
 ## License
-Copyright (c) Heini Fagerlund. Licensed under the [MIT license](http://opensource.org/licenses/mit-license.php).
+Copyright (c) 2015 Heini Fagerlund. Licensed under the [MIT license](http://opensource.org/licenses/mit-license.php).
 (See [LICENSE](https://github.com/hfagerlund/git-add-msg/blob/master/LICENSE).)
 
 - - -
 ## Changelog
+* 0.2.1 - January 28, 2018. Fixed display of changeset number in auto-generated Trac link.
 * 0.2.0 - January 13, 2016. Deprecated (optional) git status check.
 * 0.1.4 - December 30, 2015. Fixed display of ticket update message.
 * 0.1.3 - December 30, 2015. Newlines in multi-line commit messages now display in Changelog file.
