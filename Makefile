@@ -1,28 +1,18 @@
-#!/bin/bash
-#
-# Use with git-add-msg to log git commits to Trac using its XML-RPC API
-#
 # author: Heini Fagerlund
-# version: 0.2.1
 # license: MIT
-#	
-# The MIT License (MIT)
-# [OSI Approved License]
-# 
-# The MIT License (MIT)
-# 
-# Copyright (c) 2015 Heini Fagerlund
-# 
+#
+# Copyright (c) 2018 Heini Fagerlund
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,19 +21,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+SHELL = /bin/sh
 
-#Trac configuration
-. $currentDir/config.cfg
+MAIN_FILE     = git-add-msg
+AUX_FILES     = git-add-msg-config_sample.cfg
+AUX_FILES    += git-add-msg-trac-service
 
-#populate result.xml with commit msg as comment
-xsltproc --output bin/result.xml bin/transform.xsl bin/body_template.xml
-  
-if curl -H 'Content-Type: application/xml' --data @bin/result.xml "http://$username:$password@$host:$port/$instance/login/xmlrpc" &> /dev/null
-  then printf "Trac ticket successfully updated.\n"
-else
-    printf "\t%s\n" "$bar" 
-    printf "WARNING: Trac ticket could not be updated.\nAre the Trac settings in config.cfg up-to-date? 
-If so, please check whether Trac is running, and try again.\n\nIf you are not using Trac, please disregard this message.\n\n"
-    printf "\t%s\n" "$bar" 
-fi
-rm -r ./bin/
+.PHONY: all check-var
+
+all:
+	@echo "usage: make [install DEST_DIR=<path-to-git-extensions-directory>]"
+
+check-var:
+ifndef DEST_DIR
+	$(error Error: DEST_DIR is not set. For usage, run 'make')
+endif
+
+install: check-var
+	$(info > Installing git-add-msg to directory: '$(DEST_DIR)':)
+	@install -d -m 0755 $(DEST_DIR)
+	@install -m 0755 $(MAIN_FILE) $(DEST_DIR)
+	@install -m 0644 $(AUX_FILES) $(DEST_DIR)
+	@ls -1 $(DEST_DIR)
+	@echo "> Installation completed."

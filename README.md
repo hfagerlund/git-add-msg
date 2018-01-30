@@ -3,15 +3,11 @@ A git extension (command line tool) that automatically logs commits to Trac and/
 
 Replaces the following commands:
 ```
-$ git add .
+$ git add -A
 ```
 and: 
 ```
 $ git commit -am "<insert-your-commit-message-here>"
-```
-and (optionally): 
-```
-$ git status
 ```
 Also creates a **changelog.log** file (in your project's root directory), and (optionally) adds a comment in the Trac ticket for each commit.
 
@@ -33,30 +29,36 @@ $ git add-msg
 (All copyrights for the above remain with their respective owners.)
 - - -
 ## Installation
-### Download:
-Download the **git-add-msg** project in [.zip](https://github.com/hfagerlund/git-add-msg/archive/master.zip) format, or clone the repository:
 ```
 $ git clone https://github.com/hfagerlund/git-add-msg.git
+$ cd git-add-msg
+$ make install DEST_DIR=/path/to/your-git-extensions-directory
 ```
-
-
-Place the (extracted) **git-add-msg**, **trac-service**, and **config_sample.cfg** files in ``<your-git-extensions-directory>``, and add it to your (executable) path:
+* add the path to `<your-git-extensions-directory>` to your **executable path**:
 ```bash
-export PATH="$PATH:/path/to/<your-git-extensions-directory>" #Note: no trailing slash
+export PATH="$PATH:/path/to/your-git-extensions-directory" #Note: no trailing slash
 ```
 
+### To uninstall:
+Manually remove the following files from `<your-git-extensions-directory>`:
+```
+git-add-msg-config.cfg
+git-add-msg-config_sample.cfg
+git-add-msg
+git-add-msg-trac-service
+```
 - - -
 ## Configuration
 #### All users:
-(OPTIONAL) Copy and save ``config_sample.cfg`` as ``config.cfg``. This step can be skipped (refer to note below).
+(OPTIONAL) Rename ``git-add-msg-config_sample.cfg`` to ``git-add-msg-config.cfg`` in `<your-git-extensions-directory>`. This step can be skipped (refer to note below).
 
-**Note**: if a ``config.cfg`` file is **not** present, it will result in a warning message being displayed when the tool is run (this can be safely ignored).
+**Note**: if a ``git-add-msg-config.cfg`` file is **not** present, it will result in a warning message being displayed when the tool is run (this can be safely ignored if not using Trac).
 
 - - - 
 #### Trac users only:
-(1.) Update ``config.cfg`` (copied from ``config_sample.cfg``) with your Trac settings by replacing the following values:
+(1.) Update ``git-add-msg-config.cfg`` (copied from ``git-add-msg-config_sample.cfg`` in `<your-git-extensions-directory>`) with your Trac settings by replacing the following values:
 ```
-repo="no_repo_specified"         # replace <no_repo_specified> with the name of your Trac repository
+repo="no_repo_specified"         # replace <no_repo_specified> with the **name** of your Trac repository (found in Trac under 'Administration' > 'Manage Repositories' > 'Name')
 username="no_username_specified" # (as above, but with your Trac login username)
 password="no_password_specified" 
 host="no_host_specified"
@@ -92,11 +94,6 @@ git committing...
 [master e10379d] #221: updated content
  1 files changed, 1 insertions(+), 0 deletions(-)
 Trac ticket successfully updated.
-Do you wish to view the git status?
-	 Yes (y)
-	 No (n)
-## selected 'n'
-Exiting.
 ```
 
 #### Trac users:
@@ -121,6 +118,7 @@ Copyright (c) 2015 Heini Fagerlund. Licensed under the [MIT license](http://open
 
 - - -
 ## Changelog
+* 0.3.1 - January 29, 2018. New feature: automated installation.
 * 0.2.1 - January 29, 2018. Fixed display of changeset number in auto-generated Trac link.
 * 0.2.0 - January 13, 2016. Deprecated (optional) git status check.
 * 0.1.4 - December 30, 2015. Fixed display of ticket update message.
