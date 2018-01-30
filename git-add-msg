@@ -2,11 +2,10 @@
 # A git extension (command line tool) that automatically logs commits to Trac and/or a changelog.
 # 
 ## ie. is a substitute for the following commands:
-##               $ git add .
+##               $ git add -A
 ##               $ git commit -am "<place your commit msg here>"
-## (optionally)  $ git status
 #
-# Also creates file 'changelog.txt' (ie. logs git SHA-1 hashes/changesets).
+# Also creates file 'changelog.log' (ie. logs git SHA-1 hashes/changesets).
 #
 # Usage:
 # * make executable using: $ chmod 0750 git-add-msg
@@ -14,7 +13,7 @@
 # * (Trac users) run using -r option to automatically add comments, with links to changesets in specified repository, in Trac tickets.
 #
 # author: Heini Fagerlund
-# version: 0.2.1
+# version: 0.3.1
 # license: MIT
 # 
 # Copyright (c) 2015 Heini Fagerlund
@@ -50,7 +49,7 @@ _key()
 usage() { 
     printf "\t%s\n" "$bar"
     
-    printf "\t %s\n" "USAGE:  ./trac-service [-r <string>]
+    printf "\t %s\n" "USAGE:  ./git-add-msg-trac-service [-r <string>]
                    options:  
                    -r    Trac repository name"
     printf "\t%s\n" "$bar" 
@@ -66,14 +65,14 @@ while getopts ":r:" option; do
     esac
 done
 
-if [ -f $currentDir/config.cfg ];
+if [ -f $currentDir/git-add-msg-config.cfg ];
 then
-    sed -i "s/^\(repo=\).*$/\1\"$rarg\"/" $currentDir/config.cfg
+    sed -i "s/^\(repo=\).*$/\1\"$rarg\"/" $currentDir/git-add-msg-config.cfg
     repo=${rarg:-no_repo_specified}
 else
     printf "\t%s\n" "$bar"
     printf "ALL USERS:\nTo avoid seeing this message again,
-copy and save config_sample.cfg as config.cfg.\n\nTrac USERS ONLY:\nUpdate config.cfg with your Trac settings.\n"
+copy and save git-add-msg-config_sample.cfg as git-add-msg-config.cfg.\n\nTrac USERS ONLY:\nUpdate git-add-msg-config.cfg with your Trac settings.\n"
     printf "\t%s\n" "$bar"
     exit
 fi
@@ -88,7 +87,7 @@ do
 
     if [ ! -z "$mymultimsg" -a "$mymultimsg" != " " ]; then
         printf "git committing...\n"
-        git add .
+        git add -A
 	git commit -am "#$ticketnum: $mymultimsg" | xclip
         changeset=$( xclip -o ) 
 
@@ -141,7 +140,7 @@ MYXML
  </xsl:template>
 </xsl:stylesheet> 
 EOF
-		    . trac-service
+		    . git-add-msg-trac-service
 
 		else
 		    rm -r ./bin/
