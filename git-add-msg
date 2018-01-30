@@ -83,7 +83,7 @@ read ticketnum
 
 while :
 do
-    printf "Enter your commit message (without quote marks; press ctrl-d when done):\n"
+    printf "Enter your commit message (without quote marks; press Enter, then Ctrl+d when done):\n"
     mymultimsg=$(cat)
 
     if [ ! -z "$mymultimsg" -a "$mymultimsg" != " " ]; then

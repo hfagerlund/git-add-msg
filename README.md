@@ -86,7 +86,7 @@ Done!
 someuser@somehost:~/my-project$ git add-msg
 Enter your (Trac) ticket number (without hash OR colon):
 221
-Enter your commit message (without quote marks; press ctrl-d when done):
+Enter your commit message (without quote marks; press Enter, then Ctrl+d when done):
 updated content
 git committing...
 [master e10379d] #221: updated content
